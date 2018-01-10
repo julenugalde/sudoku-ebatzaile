@@ -64,7 +64,74 @@ public class Lauki {
 	public Laukitxo[] getLaukitxoak() {
 		return laukitxoak;
 	}
+
 	
+	public boolean ebatzi() {
+		//TODO ebazteko kodea idatzi
+		for (int i=0; i<laukitxoak.length; i++) {
+			if (laukitxoak[i].isHutsik())
+				laukitxoak[i].setBalio(3); 
+		}
+		System.out.println("Egiaztatu: " + egiaztatu());
+		return true;
+	}
+	
+	private int hurrengoPosizioHutsa() {
+		for (int i=0; i<laukitxoak.length; i++) {
+			if (laukitxoak[i].isHutsik())
+				return i;
+		}
+		return -1;
+	}
+	
+	private boolean saiatuBalioa(int posizioa, int balioa) {
+		//TODO EGIN
+		return false;
+	}
+	
+	/** Sudokuren arauak betetzen diren egiaztatu
+	 * 
+	 * @return <code>true</code> sudokua zuzena bada, <code>false</code> akatsik badago
+	 */
+	public boolean egiaztatu() {
+		for (int i=0; i<laukitxoak.length; i++) {
+			//hutsik ez badago,begiratu 
+			if (!laukitxoak[i].isHutsik()) {
+				int balioa = laukitxoak[i].getBalio();
+				//Begiratu lerro berean balioa errepikatzen den
+				int j = i + 1;
+				while ((j%Lauki.ZABALERA != 0) && (j<laukitxoak.length)) {
+					//System.out.println(i + "-" + j + " egiaztatzen (lerroa)");
+					if (balioa == laukitxoak[j].getBalio()) {
+						System.err.println("Error: " + i + "-" + j);
+						return false;
+					}						
+					j++;
+				}
+				//Begiratu zutabe berean balioa errepikatzen den
+				j = i + Lauki.ZABALERA;
+				while (j<laukitxoak.length) {
+					//System.out.println(i + "-" + j + " egiaztatzen (zutabea)");
+					if (balioa == laukitxoak[j].getBalio()) {
+						System.err.println("Error: " + i + "-" + j);
+						return false;
+					}
+					j+=Lauki.ZABALERA;
+				}
+			}
+		}
+		return true;
+	}
+	
+	public boolean isEbatzita() {
+		if (egiaztatu()) {
+			for (int i=0; i<laukitxoak.length; i++) {
+				if (laukitxoak[i].isHutsik()) return false;
+			}
+		}
+		return true;
+	}
+
 	public static void main(String[] args) {
 		File f = new File("wildcatjan17.csv");
 		try {
@@ -79,19 +146,14 @@ public class Lauki {
 					j = 0;
 				}
 			}
+			
+			lauki.egiaztatu();
+			
 		} catch (IOException ioex) {
 			System.err.println("IO error: " + ioex.getLocalizedMessage());
 		} catch (NumberFormatException nfex) {
 			System.err.println("Format error: " + nfex.getLocalizedMessage());
 		}
 	}
-	
-	public boolean ebatzi() {
-		//TODO ebazteko kodea idatzi
-		for (int i=0; i<laukitxoak.length; i++) {
-			if (laukitxoak[i].isHutsik())
-				laukitxoak[i].setBalio(3);
-		}
-		return true;
-	}
+
 }

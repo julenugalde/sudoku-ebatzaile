@@ -60,6 +60,6 @@ public class Laukitxo {
 	}
 	
 	public boolean isHasierakoa() {
-		return flagHasierako;
+		return flagHasierako; 
 	}
 }

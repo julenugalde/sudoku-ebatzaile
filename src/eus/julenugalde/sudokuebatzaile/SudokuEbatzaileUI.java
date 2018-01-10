@@ -27,7 +27,7 @@ public class SudokuEbatzaileUI extends JFrame {
 	public SudokuEbatzaileUI() {
 		lauki = new Lauki();
 		besteIturri = new Font("Arial", Font.PLAIN, 12);
-		hasieraIturri = new Font("Arial", Font.BOLD, 14);
+		hasieraIturri = new Font("Arial", Font.BOLD, 16); 
 		
 		sortuOsagaiak();
 		osagaiakBanatu();
