@@ -10,9 +10,12 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 @SuppressWarnings("serial")
 public class SudokuEbatzaileUI extends JFrame {
@@ -23,11 +26,13 @@ public class SudokuEbatzaileUI extends JFrame {
 	private Lauki lauki;
 	private Font hasieraIturri;
 	private Font besteIturri;
+	private File currentPath;
 	
 	public SudokuEbatzaileUI() {
 		lauki = new Lauki();
 		besteIturri = new Font("Arial", Font.PLAIN, 12);
 		hasieraIturri = new Font("Arial", Font.BOLD, 16); 
+		currentPath = new File(System.getProperty("user.dir"));
 		
 		sortuOsagaiak();
 		osagaiakBanatu();
@@ -36,7 +41,6 @@ public class SudokuEbatzaileUI extends JFrame {
 	}
 	
 	private void leihoaKonfiguratu() {
-		// TODO Auto-generated method stub
 		setTitle("Sudoku ebatzailea");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocation(100, 50);
@@ -47,6 +51,7 @@ public class SudokuEbatzaileUI extends JFrame {
 		jbIrakurri.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				JButton source = (JButton)e.getSource();
 				try {
 					File fitxategia = fitxategiaAukeratu();
 					if (fitxategia != null) {
@@ -56,8 +61,11 @@ public class SudokuEbatzaileUI extends JFrame {
 					}
 				}
 				catch (IOException ioex) {
-					//TODO erakutsi ERRORE leiho bat
-					System.err.println("error");
+					JOptionPane.showMessageDialog(
+							source.getTopLevelAncestor(),
+							"Ezin izan da fitxategia irakurri:\n" + ioex.getLocalizedMessage(),
+							"Errorea fitxategian",
+							JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
@@ -65,8 +73,21 @@ public class SudokuEbatzaileUI extends JFrame {
 		jbEbatzi.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				lauki.ebatzi();
-				eguneratuLaukia();
+				if (lauki.ebatzi()) {
+					eguneratuLaukia();
+					JOptionPane.showMessageDialog(
+				              ((JButton)arg0.getSource()).getTopLevelAncestor(),
+				              "Sudokua ebatzita",
+				              "Ebatzita",
+				              JOptionPane.INFORMATION_MESSAGE);
+				}
+				else {
+					JOptionPane.showMessageDialog(
+							((JButton)arg0.getSource()).getTopLevelAncestor(),
+							"Ezin izan da Sudokua ebatzi",
+							"Ezin da ebatzi",
+							JOptionPane.ERROR_MESSAGE);
+				}
 			}			
 		});
 	}
@@ -78,6 +99,8 @@ public class SudokuEbatzaileUI extends JFrame {
 			jtfLaukitxoak[i].setEditable(false);
 			jtfLaukitxoak[i].setHorizontalAlignment(JTextField.CENTER);
 			jtfLaukitxoak[i].setSize(30, jtfLaukitxoak[i].getSize().height);
+			//TODO koloreak aldatu zeldak ezberdintzeko
+			int lerro = i % (Lauki.ZABALERA);
 		}
 		jbIrakurri = new JButton("Fitxategia irakurri");
 		jbEbatzi = new JButton("Ebatzi");
@@ -120,7 +143,17 @@ public class SudokuEbatzaileUI extends JFrame {
 	}
 	
 	private File fitxategiaAukeratu() {
-		//TODO ondo egin
-		return new File("wildcatjan17.csv");
+		JFileChooser chooser = new JFileChooser(currentPath);
+		FileNameExtensionFilter filter = 
+			 new FileNameExtensionFilter("Sudoku fitxategiak (.csv)", "csv");
+		chooser.setFileFilter(filter);
+		int returnVal = chooser.showOpenDialog(this);
+		if(returnVal == JFileChooser.APPROVE_OPTION) {
+			currentPath = chooser.getCurrentDirectory();
+			return new File(chooser.getSelectedFile().getAbsolutePath());
+		}
+		else {
+			return null;
+		}
 	}
 }
