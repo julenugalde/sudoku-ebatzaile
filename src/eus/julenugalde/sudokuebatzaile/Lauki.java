@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
+//TODO Lauki dokumentatu
 /** Sudoku laukia */
 public class Lauki {
 	/** Zeldatxoaren zabalera */
@@ -23,6 +24,7 @@ public class Lauki {
 		}
 	}
 	
+	//TODO Lauki dokumentatu
 	public Lauki(File fitxategi, char bereizle) throws IOException, NumberFormatException {
 		this();
 
@@ -58,17 +60,19 @@ public class Lauki {
 		
 	}
 	
+	//TODO Lauki dokumentatu
 	public boolean setLaukitxo (int posizioa, int balioa) {
 		if (posizioa < 0) return false;
 		if (posizioa > laukitxoak.length) return false;
 		return laukitxoak[posizioa].setBalio(balioa);
 	}
 	
+	//TODO Lauki dokumentatu
 	public Laukitxo[] getLaukitxoak() {
 		return laukitxoak;
 	}
 
-	
+	//TODO Lauki dokumentatu
 	public boolean ebatzi() {
 		int lehenengoHutsa = hurrengoPosizioHutsa();
 		if (lehenengoHutsa == -1) {
@@ -176,12 +180,14 @@ public class Lauki {
 		return true;
 	}
 	
-	private int zelda(int kokapena) {
+	//TODO Lauki dokumentatu
+	public int zelda(int kokapena) {
 		int lerroa = (kokapena / (Lauki.ZELDA_ZABALERA * Lauki.ZABALERA)) % Lauki.ZELDA_ZABALERA; 
 		int zutabea = (kokapena % Lauki.ZABALERA) / Lauki.ZELDA_ZABALERA; 
 		return ((lerroa * Lauki.ZABALERA) + zutabea);
 	}
 	
+	//TODO Lauki dokumentatu
 	public boolean isEbatzita() {
 		if (egiaztatu()) {
 			for (int i=0; i<laukitxoak.length; i++) {
@@ -191,15 +197,20 @@ public class Lauki {
 		return true;
 	}
 
+	/** Probak egitek funtzio nagusia. Fitxategi bat ireki eta sudokua ebazten du
+	 * 
+	 * @param args Fitxategiaren izena. Hutsik badago probazko bat erabiltzen du
+	 */
 	public static void main(String[] args) {
-		File f = new File(System.getProperty("user.dir") + "//res//v2155141.csv");
+		String izena = ((args.length==0) ? "v2155141.csv" : args[0]);
+		File f = new File(System.getProperty("user.dir") + "//res//" + izena);
 		try {
 			Lauki lauki = new Lauki(f, ';');
-			System.out.println("------- Ebatzi gabe ------");
-			lauki.inprimatu();
+			System.out.println(f.getAbsolutePath()  + " sudokua ebatziko da.");
+			System.out.println(" * Ebatzi gabe \n" + lauki.toString());
+			System.out.println("Sukodu-a ebazten. Itxaron mesedez...");
 			lauki.ebatzi();
-			System.out.println("\n------- Ebatzita ---------");
-			lauki.inprimatu();
+			System.out.println("\n * Ebatzita\n" + lauki.toString());
 			
 		} catch (IOException ioex) {
 			System.err.println("IO error: " + ioex.getLocalizedMessage());
@@ -208,17 +219,28 @@ public class Lauki {
 		}
 	}
 	
-	public void inprimatu() {
+	@Override
+	public String toString() {
 		Laukitxo[] l = getLaukitxoak();
-		int j=0;
-		for (int i=0; i<l.length; i++) {
+		int j=1;
+		StringBuilder sb = new StringBuilder ("+---------+---------+---------+\n|");
+		for (int i=0; i<l.length; i++, j++) {
 			String katea = (l[i].isHutsik()) ? " . " : (" " + l[i].getBalio() + " "); 
-			System.out.print(katea);
-			if ((++j) == 9) {
-				System.out.println("");
-				j = 0;
+			sb.append(katea);
+			if ((j % Lauki.ZELDA_ZABALERA) == 0) {	//3x3 zeldatxoaren azkena
+				sb.append("|");
+			}
+			if ((j % Lauki.ZABALERA) == 0) {	//Lerroaren azkena
+				sb.append("\n");
+				if ((j % (Lauki.ZABALERA*Lauki.ZELDA_ZABALERA)) == 0) {	//3 lerroaz behin
+					sb.append("+---------+---------+---------+\n");
+				}
+				if (j != l.length) {
+					sb.append("|");
+				}
 			}
 		}
+		return sb.toString();
 	}
 
 }

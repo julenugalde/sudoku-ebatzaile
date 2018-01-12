@@ -1,22 +1,28 @@
 package eus.julenugalde.sudokuebatzaile;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+//TODO dokumentazioa
 @SuppressWarnings("serial")
 public class SudokuEbatzaileUI extends JFrame {
 	private JTextField[] jtfLaukitxoak;
@@ -27,12 +33,17 @@ public class SudokuEbatzaileUI extends JFrame {
 	private Font hasieraIturri;
 	private Font besteIturri;
 	private File currentPath;
-	
+	private Color koloreBakoitia;
+	private Color koloreBikoitia;
+
+	//TODO dokumentazioa
 	public SudokuEbatzaileUI() {
 		lauki = new Lauki();
 		besteIturri = new Font("Arial", Font.PLAIN, 12);
 		hasieraIturri = new Font("Arial", Font.BOLD, 16); 
 		currentPath = new File(System.getProperty("user.dir"));
+		koloreBakoitia = SystemColor.control.darker();
+		koloreBikoitia = SystemColor.control;		
 		
 		sortuOsagaiak();
 		osagaiakBanatu();
@@ -45,6 +56,13 @@ public class SudokuEbatzaileUI extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocation(100, 50);
 		setSize(350, 350);
+		try {
+			//UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+			UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+				| UnsupportedLookAndFeelException e) {
+			System.err.println("Errorea leihoaren 'look&feel' ezartzen");
+		}
 	}
 
 	private void erantzuleakEzarri() {
@@ -73,10 +91,13 @@ public class SudokuEbatzaileUI extends JFrame {
 		jbEbatzi.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				JButton iturria = (JButton)arg0.getSource();
+				iturria.setText("Ebazten...");
+				iturria.getTopLevelAncestor().repaint();
 				if (lauki.ebatzi()) {
 					eguneratuLaukia();
 					JOptionPane.showMessageDialog(
-				              ((JButton)arg0.getSource()).getTopLevelAncestor(),
+				              iturria.getTopLevelAncestor(),
 				              "Sudokua ebatzita",
 				              "Ebatzita",
 				              JOptionPane.INFORMATION_MESSAGE);
@@ -88,6 +109,8 @@ public class SudokuEbatzaileUI extends JFrame {
 							"Ezin da ebatzi",
 							JOptionPane.ERROR_MESSAGE);
 				}
+				iturria.setText("Ebatzi");
+				iturria.setEnabled(false);
 			}			
 		});
 	}
@@ -99,8 +122,11 @@ public class SudokuEbatzaileUI extends JFrame {
 			jtfLaukitxoak[i].setEditable(false);
 			jtfLaukitxoak[i].setHorizontalAlignment(JTextField.CENTER);
 			jtfLaukitxoak[i].setSize(30, jtfLaukitxoak[i].getSize().height);
-			//TODO koloreak aldatu zeldak ezberdintzeko
-			int lerro = i % (Lauki.ZABALERA);
+			if ((lauki.zelda(i)%2) == 0) {	//3x3 zelda bikoitia
+				jtfLaukitxoak[i].setBackground(koloreBikoitia);
+			} else {	//bakoitia
+				jtfLaukitxoak[i].setBackground(koloreBakoitia);
+			}
 		}
 		jbIrakurri = new JButton("Fitxategia irakurri");
 		jbEbatzi = new JButton("Ebatzi");
@@ -112,6 +138,7 @@ public class SudokuEbatzaileUI extends JFrame {
 		for (int i=0; i<jtfLaukitxoak.length; i++) {
 			jpLaukia.add(jtfLaukitxoak[i]);
 		}
+		jpLaukia.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 1));
 		
 		JPanel jpBotoiak = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		jpBotoiak.add(jbIrakurri);
@@ -121,6 +148,10 @@ public class SudokuEbatzaileUI extends JFrame {
 		add(jpBotoiak, BorderLayout.SOUTH);
 	}
 
+	/** Funtzio nagusia. Sudoku ebatzaile leiho berri bat sortzen du
+	 * 
+	 * @param args Ez dute ezartarako erabiltzen
+	 */
 	public static void main(String[] args) {
 		SudokuEbatzaileUI ui = new SudokuEbatzaileUI();
 		ui.setVisible(true);

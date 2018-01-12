@@ -55,10 +55,18 @@ public class Laukitxo {
 		balio = HUTSIK;
 	}
 	
+	/** Hasieran laukitxoak balore bat zeukan ezartzeko
+	 * 
+	 * @param hasierakoa balorea ezartzeko
+	 */
 	public void setHasierako(boolean hasierakoa) {
 		flagHasierako = hasierakoa;
 	}
 	
+	/** Begiratzen du hasieran laukitxoak balorea bat ote zeukan
+	 * 
+	 * @return <code>true</code> sudoku-arazoaren datu bat bazen
+	 */
 	public boolean isHasierakoa() {
 		return flagHasierako; 
 	}
