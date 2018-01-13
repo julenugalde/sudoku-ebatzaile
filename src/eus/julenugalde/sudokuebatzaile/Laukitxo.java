@@ -2,6 +2,9 @@ package eus.julenugalde.sudokuebatzaile;
 
 /**
  * Laukitxo bakoitza Sudoku laukian
+ * 
+ * @author <a href="https:////github.com//julenugalde">Julen Ugalde</a>
+ * @version 1.0
  */
 public class Laukitxo {
 	/**	Balioa laukitxoa hutsik badago */
@@ -14,10 +17,11 @@ public class Laukitxo {
 	private int balio;
 	private boolean flagHasierako;
 	
-	/** Eraikilea. Hutsik hasten du laukitxoa
+	/** Sortzailea. Hutsik hasten du laukitxoa
 	 */
 	public Laukitxo() {
 		balio = HUTSIK;
+		flagHasierako = false;
 	}
 	
 	/** Laukitxoaren balioa eskuratzeko

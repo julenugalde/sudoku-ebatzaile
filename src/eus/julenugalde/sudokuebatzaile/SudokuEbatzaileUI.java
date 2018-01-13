@@ -22,7 +22,12 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-//TODO dokumentazioa
+/** Erabiltzaile-interfazea. Sudokuaren NxN laukia sortzen du eta fitxategi batetik
+ * hasierako datuak hartzen ditu. Ebazteko aukera ematen da.
+ * 
+ * @author <a href="https:////github.com//julenugalde">Julen Ugalde</a>
+ * @version 1.0
+ */
 @SuppressWarnings("serial")
 public class SudokuEbatzaileUI extends JFrame {
 	private JTextField[] jtfLaukitxoak;
@@ -36,7 +41,8 @@ public class SudokuEbatzaileUI extends JFrame {
 	private Color koloreBakoitia;
 	private Color koloreBikoitia;
 
-	//TODO dokumentazioa
+	/** Intefazearen sortzailea
+	 */
 	public SudokuEbatzaileUI() {
 		lauki = new Lauki();
 		besteIturri = new Font("Arial", Font.PLAIN, 12);
@@ -150,7 +156,7 @@ public class SudokuEbatzaileUI extends JFrame {
 
 	/** Funtzio nagusia. Sudoku ebatzaile leiho berri bat sortzen du
 	 * 
-	 * @param args Ez dute ezartarako erabiltzen
+	 * @param args Ez dira ezartarako erabiltzen
 	 */
 	public static void main(String[] args) {
 		SudokuEbatzaileUI ui = new SudokuEbatzaileUI();

@@ -4,8 +4,13 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-//TODO Lauki dokumentatu
-/** Sudoku laukia */
+/** Sudoku laukia. Laukitxo bakoitzeko informazioa (balioa eta hasierako den flag) begiratu eta
+ * ezartzeko metodoak ematen dira. csv fitxategi batetik irakurtzeko, formatua zuzena den
+ * egiaztatzeko eta sudokua ebazteko metodoak ere ematen dira. 
+ * 
+ * @author <a href="https:////github.com//julenugalde">Julen Ugalde</a>
+ * @version 1.0
+ */
 public class Lauki {
 	/** Zeldatxoaren zabalera */
 	public static final int ZELDA_ZABALERA = 3;
@@ -15,7 +20,7 @@ public class Lauki {
 	private Laukitxo[] laukitxoak;
 	private boolean flagEbatzita = false;
 	
-	/** Laukia hutsik hasteko */
+	/** Sortzailea laukia hutsik hasteko */
 	public Lauki() {
 		laukitxoak = new Laukitxo[ZABALERA * ZABALERA];
 		for (int i=0; i<laukitxoak.length; i++) {
@@ -24,7 +29,14 @@ public class Lauki {
 		}
 	}
 	
-	//TODO Lauki dokumentatu
+	/** Sortzailea hasierako datuak fitxategi batetik datuak eskuratzeko
+	 * 
+	 * @param fitxategi irakurriko den .csv fitxategia
+	 * @param bereizle .csv fitxategian datuak bereizteko karakterea. Adibideetan puntu eta koma
+	 * (<code>';'</code>) erabiltzen da
+	 * @throws IOException Fitxategia aurkitzen ez bada edo ezin bada irakurri
+	 * @throws NumberFormatException Irakurritako datuak baliogarriak ez badira
+	 */
 	public Lauki(File fitxategi, char bereizle) throws IOException, NumberFormatException {
 		this();
 
@@ -60,19 +72,36 @@ public class Lauki {
 		
 	}
 	
-	//TODO Lauki dokumentatu
+	/** Laukitxoaren balioa ezartzeko metodoa. Hasierako flag-a ez da aldatuko
+	 * 
+	 * @param posizioa Laukitxoaren posizioa, goitik behera eta ezkerretik eskuinera zenbatzen
+	 * hasita (lehenengo laukitxoaren posizioa zero da).
+	 * @param balioa Ezarriko den balioa, <code>Laukitxo.MIN_VALUE</code> eta 
+	 * <code>Laukitxo.MAX_VALUE</code> artea, biak barne.
+	 * @return <code>true</code> balioa ondo ezartzen bada, <code>false</code> errorerik badago.
+	 */
 	public boolean setLaukitxo (int posizioa, int balioa) {
 		if (posizioa < 0) return false;
 		if (posizioa > laukitxoak.length) return false;
 		return laukitxoak[posizioa].setBalio(balioa);
 	}
 	
-	//TODO Lauki dokumentatu
+	/** Sudokuaren laukitxoak array dimentsiobakar batean itzulten du.
+	 * 
+	 * @return {@link Laukitxo} array dimentsiobakarra, sudokua goitik behera eta ezkerretik
+	 * eskuinera irakurrita.
+	 */
 	public Laukitxo[] getLaukitxoak() {
 		return laukitxoak;
 	}
 
-	//TODO Lauki dokumentatu
+	/** Hasierako datuak hartuta, sudokua ebazten saiatzen den metodoa. Algoritmo sinple bat
+	 * erabiltzen da: lehenengo laukitxo hutsa bilatzen du, baliogarria den lehenengo balioa 
+	 * saiatzen du eta errekurtzioa erabiltzen du. Akats bat topatzen badu sudokua egiaztatzen,
+	 * saiatutako balioa baztertu eta hurrengo balio baliogarria saiatzen du.
+	 * 
+	 * @return <code>true</code> sudokuak soluzio zuzena badu, <code>false</code> ezin bada ebatzi
+	 */
 	public boolean ebatzi() {
 		int lehenengoHutsa = hurrengoPosizioHutsa();
 		if (lehenengoHutsa == -1) {
@@ -180,14 +209,23 @@ public class Lauki {
 		return true;
 	}
 	
-	//TODO Lauki dokumentatu
+	/** Sudokua <code>Lauki.ZELDA_ZABALERA*Lauki.ZELDA_ZABALERA</code> dimentsioko zeldetan
+	 * antolatzen da, barruan balio bat ezin dela errepikatu. Zeldak zerotik zenbatzen dira,
+	 * goitik behera eta ezkerretik eskuinera zenbatzen hasita.
+	 * 
+	 * @param kokapena {@link Laukitxo}-aren kokapena array dimentsibakar batean.
+	 * @return Zeldaren zenbakia.
+	 */
 	public int zelda(int kokapena) {
 		int lerroa = (kokapena / (Lauki.ZELDA_ZABALERA * Lauki.ZABALERA)) % Lauki.ZELDA_ZABALERA; 
 		int zutabea = (kokapena % Lauki.ZABALERA) / Lauki.ZELDA_ZABALERA; 
 		return ((lerroa * Lauki.ZABALERA) + zutabea);
 	}
 	
-	//TODO Lauki dokumentatu
+	/** Sudokua ebatzita dagoen begiratzen du.
+	 * 
+	 * @return <code>true</code> ebatzita badago
+	 */
 	public boolean isEbatzita() {
 		if (egiaztatu()) {
 			for (int i=0; i<laukitxoak.length; i++) {
